@@ -51,9 +51,66 @@ function addItemToCart(title, price, imageSrc) {
 
                 <span class="cart-price cart-column">${price}</span>
                 <div class="cart-quantity cart-column">
-                    <input class="cart-quantity-input" type="number" min="1" value="1">
+                    <input class="cart-quantity-input" type="number" min="1" max="99" value="1">
                     <button class="btn btn-danger" type="button">Удалить</button>
                 </div>`;
 
-    cartRow.innerHTML = cartRowContents
+    cartRow.innerHTML = cartRowContents;
+
+    // Добавляем слушателей событий
+    cartRow
+        .querySelector(".btn-danger")
+        .addEventListener("click", removeCartItem);
+    cartRow
+        .querySelector(".cart-quantity-input")
+        .addEventListener("change", quantityChanged);
+    
+    updateCartTotal()
+}
+
+
+function removeCartItem (event) {
+    // console.log("Удаляем элемент.");
+    // console.log(event.target.parentElement.parentElement);
+    // let del = confirm("Точно удалить?")
+
+    // if (del == true) {
+        
+    // }
+    event.target.parentElement.parentElement.remove()
+    updateCartTotal ();
+}
+
+
+function quantityChanged (event) {
+    console.log("Меняем количество товаров.");
+
+    updateCartTotal ();
+}
+
+
+function updateCartTotal () {
+    // console.log("Обновляем итоговую сумму.");
+
+    const cartRows = document.querySelectorAll(".cart-items .cart-row")
+
+    let total = 0
+
+    for (row of cartRows) {
+        // console.log(row);
+        let priceElement = row.querySelector(".cart-price");
+        let quantityElement = row.querySelector(".cart-quantity-input");
+
+        // console.log(priceElement, quantityElement);
+
+        let price = parseFloat(priceElement.innerText.replace("₽", ""))
+
+        let quantity = parseInt(quantityElement.value);
+
+        total = total + price * quantity
+
+        console.log(total);
+    }
+
+    document.querySelector(".cart-total-price").innerText = total + " ₽";
 }
